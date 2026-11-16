@@ -1,0 +1,23 @@
+# Probe suite — AGENTS.md § Session checkpoint (NOW.md)
+- [critical] `NOW.md`
+- [critical] `governance/OPEN_ITEMS.md`
+- [critical] `PAT-260717-001`
+- [critical] "update"
+- [critical] "commit"
+- [critical] "checkpoint this"
+- [critical] "wrap up"
+- [critical] "save state"
+- [critical] "push"
+- [critical] "am I good to close?"
+- [critical] "can I terminate?"
+- [critical] "we done?"
+- [rule] NOW.md is the single continuity file / handshake | continuity file
+- [rule] it points at Task-IDs and must not duplicate them | Task-IDs, duplicate
+- [rule] whoever drives the session owns the stamp, agent or admin session | owns the stamp, Claude Code admin
+- [rule] read it at the start of the session | Read
+- [rule] stamping refreshes Intent, In-flight, Next, Blockers | Intent, In-flight, Next, Blockers
+- [rule] bump the Updated date | Updated
+- [rule] a commit changing real state refreshes NOW.md in the same edit | same edit
+- [rule] confirm NOW.md is current before answering a close question | confirm, before
+- [rule] never wave a stale handshake through | never
+- [rule] the nightly scan flags a stale NOW.md as a backstop | nightly scan, behind
