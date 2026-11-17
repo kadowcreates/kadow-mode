@@ -1,0 +1,11 @@
+{
+  "name": "kadow-mode",
+  "owner": { "name": "kadowcreates", "url": "https://github.com/kadowcreates" },
+  "plugins": [
+    {
+      "name": "kadow-mode",
+      "source": "./",
+      "description": "Agent skills that measure, then claim: debloat, security-audit, context-safe-compaction, session-close, humanizer, meeting-intelligence, content-intelligence."
+    }
+  ]
+}

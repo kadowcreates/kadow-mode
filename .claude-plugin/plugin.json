@@ -1,0 +1,10 @@
+{
+  "name": "kadow-mode",
+  "version": "1.0.0",
+  "description": "Agent skills that measure, then claim: debloat, security-audit, context-safe-compaction, session-close, humanizer, meeting-intelligence, content-intelligence.",
+  "author": { "name": "kadowcreates", "url": "https://github.com/kadowcreates" },
+  "homepage": "https://github.com/kadowcreates/kadow-mode",
+  "repository": "https://github.com/kadowcreates/kadow-mode",
+  "license": "MIT",
+  "keywords": ["skills", "code-quality", "security-audit", "debloat", "writing"]
+}

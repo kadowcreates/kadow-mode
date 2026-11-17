@@ -68,7 +68,8 @@ In the pull request, say:
 
 ## Versioning
 
-Skills are versioned by the repo history. A skill that keeps its own `version` field
+Skills are versioned by the repo history. A release bumps `version` in
+`.claude-plugin/plugin.json`; plugin users get changes only when it moves. A skill that keeps its own `version` field
 (humanizer) bumps it in the same pull request and notes the change in its README.
 
 ## License

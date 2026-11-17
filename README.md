@@ -31,21 +31,34 @@ proof, or a named gap. It does not stop with "looks done."
 
 ## Install
 
-Clone once, then copy the skills you want into your harness's skills folder.
+### Claude Code: as a plugin
+
+```
+/plugin install kadow-mode --marketplace kadowcreates/kadow-mode
+```
+
+On Claude Code before 2.1.275, add the marketplace first:
+
+```
+/plugin marketplace add kadowcreates/kadow-mode
+/plugin install kadow-mode@kadow-mode
+```
+
+Claude Code picks a skill up from its `description`, or you can call it by name:
+`/kadow-mode:debloat`. Update with `/plugin marketplace update kadow-mode`.
+
+### Grok, or single skills by copy
+
+Clone once, then copy the skills you want into the harness's skills folder.
 
 ```bash
 git clone https://github.com/kadowcreates/kadow-mode.git
 
-# Claude Code: one skill, or all of them
-cp -r kadow-mode/skills/debloat ~/.claude/skills/
-cp -r kadow-mode/skills/* ~/.claude/skills/
-
-# Grok
-cp -r kadow-mode/skills/humanizer ~/.grok/skills/
+cp -r kadow-mode/skills/humanizer ~/.grok/skills/     # Grok
+cp -r kadow-mode/skills/debloat ~/.claude/skills/     # Claude Code, one skill: /debloat
 ```
 
-To update, `git pull` and copy again. Claude Code picks a skill up from its `description`,
-or you can call it by name: `/debloat`.
+To update, `git pull` and copy again.
 
 ### Requirements
 
@@ -57,6 +70,9 @@ The skills are Markdown. A few ship helper scripts:
 ## Layout
 
 ```
+.claude-plugin/
+  plugin.json       the Claude Code plugin manifest
+  marketplace.json  lets this repo serve as its own marketplace
 skills/
   <name>/
     SKILL.md      the skill: frontmatter (name, description) and instructions
