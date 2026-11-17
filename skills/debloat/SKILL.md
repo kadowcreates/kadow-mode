@@ -86,6 +86,12 @@ deletion is a claim: the system is better or equal, and still works. Adapted fro
 Editing the counter's scope, packing lines, reformatting, deleting features or records to move
 the number. A scope cut is the owner's decision: escalate with the floor arithmetic.
 
+A formatter can re-inflate lines you trimmed. Pin one format for the pass and measure a
+format-normalized delta (reformat a copy of both ends the same way, then count).
+
+**Agents in parallel only on disjoint files.** Two agents editing the same file stomp
+each other's work; run overlapping edits in sequence, then verify the whole tree.
+
 ## 3. Verify and stop
 
 After each milestone: suite, typecheck, web tests; re-measure with the same counter; commit.
