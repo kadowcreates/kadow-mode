@@ -67,6 +67,15 @@ Model output reaches an executing HTML, Markdown, template, URL, or command sink
 **Sensitive context extraction**
 The assembled context contains credentials, another user's data, private source, or policy values that themselves grant access, and user-influenced output exposes them. Read prompt assembly and data-fetch code. Disclosure of generic instructions or behavior that does not cross a data boundary is not a finding.
 
+## AI management checks (ISO/IEC 42001)
+
+Run these when the target is an AI system that makes or carries out decisions about people, or acts for clients. They are agent-platform-audit control objective CO-33 and ISO/IEC 42001 Annex A. A gap here is a governance gap, not a security finding: report it as a hardening note (`REPORT.md` item 6), never in `findings.json`, unless it also crosses a boundary described above.
+
+- **Impact assessment (A.5, clause 6.1.4; ISO/IEC 42005):** find the documented assessment: intended use, foreseeable misuse, who is affected and how, and the human who can override. Compare its date with the last model, prompt or tool change in history. Missing, or older than the model it assesses, is the note.
+- **Disclosure (A.8):** from the user's side, find where the system says it is AI, what it may do, and how to reach a human or report a problem. Check every channel it speaks on (chat, voice, email, SMS), not only the web UI.
+- **Intended use (A.9):** compare what the assessment and disclosure say the system may do with the tools and actions the code grants. A tool beyond the stated use is the note; if a lower-trust principal can reach it, it is also a candidate under *Excessive agency* above.
+- **Mapping:** in `REPORT.md`, name the Annex A objective beside each confirmed finding from this file: data, retrieval and memory (A.7); life cycle, monitoring and drift (A.6); third-party models and MCP servers (A.10).
+
 ## Universal moves (apply across the above)
 
 - Draw four maps first: each execution identity, each capability, every writable context or memory source, and each output destination. Then connect the principal at the start to the authority at the end.

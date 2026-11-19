@@ -97,3 +97,5 @@ Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) fi
 
 [MIT](LICENSE). debloat adapts [goal-sloc](https://github.com/maxim-saplin/goal-sloc)
 (MIT, Maxim Saplin); its [NOTICE](skills/debloat/NOTICE) carries that license.
+security-audit adapts [Cloudflare's security-audit skill](https://github.com/cloudflare/security-audit-skill)
+(MIT, Cloudflare, Inc.); its [NOTICE](skills/security-audit/NOTICE) carries that license.
