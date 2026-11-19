@@ -56,7 +56,7 @@ that should trigger it.
 
 ```bash
 python scripts/check-skills.py              # frontmatter, line endings, scripts compile
-node --test skills/security-audit/*.test.cjs  # if you touched security-audit
+for f in skills/security-audit/*.py; do python $f --self-test; done  # if you touched security-audit
 ```
 
 CI runs the same checks on every push and pull request.

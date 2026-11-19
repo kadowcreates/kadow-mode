@@ -17,7 +17,7 @@ proof, or a named gap. It does not stop with "looks done."
 | Skill | Use it when | What you get |
 |---|---|---|
 | [debloat](skills/debloat) | "Cut the SLOC", "find dead code", "simplify this codebase" | A measured reduction pass: same counter at both ends, a state-machine census, a comment pass proven comment-only, and a stop when only restructuring is left. |
-| [security-audit](skills/security-audit) | A security question, a focused review, or a full audit or pen test | Findings tied to a real trust boundary, with source evidence, safe reproduction, priority and the smallest fix. Validators check the report. |
+| [security-audit](skills/security-audit) | An audit of a system where AI agents send messages, spend money or ship code | A read-only, risk-based audit run to ISO 19011: risk register, tested controls, graded findings and a ranked fix list, with optional ISO/IEC 27001 and 42001 conformity. Validators check every output. |
 | [context-safe-compaction](skills/context-safe-compaction) | `CLAUDE.md` or a tool schema is over its inject limit, or a rule stopped being followed | A smaller prompt file with every rule kept, proven by probe and score scripts. |
 | [session-close](skills/session-close) | You are ending or merging agent sessions | A check that nothing lives only in the transcript: unpushed work, promises made in chat, records that disagree with what shipped. |
 
@@ -65,7 +65,7 @@ To update, `git pull` and copy again.
 The skills are Markdown. A few ship helper scripts:
 
 - **debloat**, **context-safe-compaction**: Python 3.10 or later, standard library only.
-- **security-audit**: Node.js 20 or later for the report validators.
+- **security-audit**: Python 3.11 or later, git, and Claude Code or Grok to run the auditor.
 
 ## Layout
 
@@ -97,5 +97,3 @@ Issues and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) fi
 
 [MIT](LICENSE). debloat adapts [goal-sloc](https://github.com/maxim-saplin/goal-sloc)
 (MIT, Maxim Saplin); its [NOTICE](skills/debloat/NOTICE) carries that license.
-security-audit adapts [Cloudflare's security-audit skill](https://github.com/cloudflare/security-audit-skill)
-(MIT, Cloudflare, Inc.); its [NOTICE](skills/security-audit/NOTICE) carries that license.

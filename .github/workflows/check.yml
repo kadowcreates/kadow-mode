@@ -13,8 +13,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
       - run: python scripts/check-skills.py
-      - run: node --test skills/security-audit/*.test.cjs
+      - run: for f in skills/security-audit/*.py; do python $f --self-test; done
