@@ -56,7 +56,7 @@ that should trigger it.
 
 ```bash
 python scripts/check-skills.py              # frontmatter, line endings, scripts compile
-for f in skills/security-audit/*.py; do python $f --self-test; done  # if you touched security-audit
+for f in skills/platform-audit/*.py; do python $f --self-test; done  # if you touched platform-audit
 ```
 
 CI runs the same checks on every push and pull request.

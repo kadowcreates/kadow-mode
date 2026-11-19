@@ -5,7 +5,7 @@
     {
       "name": "kadow-mode",
       "source": "./",
-      "description": "Agent skills that measure, then claim: debloat, security-audit, context-safe-compaction, session-close, humanizer, meeting-intelligence, content-intelligence."
+      "description": "Agent skills that measure, then claim: debloat, platform-audit, context-safe-compaction, session-close, humanizer, meeting-intelligence, content-intelligence."
     }
   ]
 }

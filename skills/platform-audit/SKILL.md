@@ -1,9 +1,9 @@
 ---
-name: security-audit
+name: platform-audit
 description: Read-only, risk-based audit of a production system where AI agents send messages, spend money or ship code, run and reported to ISO 19011, with an optional ISO/IEC 27001 and 42001 conformity part. Use for an agent platform audit, a security or controls audit of an agent system, or a delta re-audit. Not for a quick code review.
 ---
 
-# Security audit (agent platform audit)
+# Platform audit
 
 A complete audit of what an agent system can do to the world and whether its controls stop it. It produces an audit plan, a risk register, a control inventory, tested controls, findings graded to ISO 19011 with corrective action requests, and a ranked fix list. Everything it claims rests on a file in `out/`.
 

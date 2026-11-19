@@ -56,7 +56,7 @@ Every one of them looks fine from the inside. The audit finds them from evidence
 ### Start an audit
 
 ```
-cd skills/security-audit           # in this plugin, or wherever the skill is installed
+cd skills/platform-audit           # in this plugin, or wherever the skill is installed
 python audit.py                     # the auditor runs in Claude Code
 python audit.py --harness grok      # or in Grok
 ```
