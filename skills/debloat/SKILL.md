@@ -33,7 +33,9 @@ deletion is a claim: the system is better or equal, and still works. Adapted fro
    (decorators), enum and vocabulary members (iterated), fixtures, entry points, names used
    by string (`getattr`, registries, templates). **Scripts and config entries also have
    consumers outside the repo:** grep systemd units (user and system), crontabs and timers
-   for the file name before calling a script dead.
+   for the file name before calling a script dead. **So do public names:** another repo can
+   put this one on `sys.path` or import it as a package; grep every sibling repo for a
+   method before deleting it (a "no caller" method removed this way broke a dashboard).
 2. **A dead constant can hide an unenforced rule.** If an unused name encodes a policy (a
    deny list, a limit, a role default), find what enforces that policy now and the test that
    covers it. Enforced elsewhere: delete. Enforced nowhere: it is a bug; file it, do not delete.
