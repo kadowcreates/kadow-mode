@@ -97,6 +97,8 @@ each other's work; run overlapping edits in sequence, then verify the whole tree
 ## 3. Verify and stop
 
 After each milestone: suite, typecheck, web tests; re-measure with the same counter; commit.
+The repo's suite is not the system: smoke every consumer that runs this code (other repos,
+a live page's endpoints) at baseline and after the push, and report both.
 Stop when consecutive milestones yield little, or every remaining lever is restructuring or
 scope. Stopping early with honest numbers is a finding, not a failure.
 
