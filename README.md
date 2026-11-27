@@ -45,7 +45,8 @@ On Claude Code before 2.1.275, add the marketplace first:
 ```
 
 Claude Code picks a skill up from its `description`, or you can call it by name:
-`/kadow-mode:debloat`. Update with `/plugin marketplace update kadow-mode`.
+`/kadow-mode:debloat`. Each version is a [release](https://github.com/kadowcreates/kadow-mode/releases); update with
+`/plugin marketplace update kadow-mode`, then `/plugin update kadow-mode@kadow-mode`.
 
 ### Grok, or single skills by copy
 

@@ -1,0 +1,24 @@
+name: Skill misfired
+description: A skill did the wrong thing, or did not load when it should have.
+labels: [misfire]
+body:
+  - type: input
+    id: skill
+    attributes: {label: Skill, placeholder: debloat}
+    validations: {required: true}
+  - type: input
+    id: harness
+    attributes: {label: Harness and version, placeholder: Claude Code 2.1.300}
+    validations: {required: true}
+  - type: textarea
+    id: prompt
+    attributes: {label: Prompt, description: What you asked.}
+    validations: {required: true}
+  - type: textarea
+    id: did
+    attributes: {label: What the agent did, description: A transcript excerpt beats a summary.}
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: What you expected}
+    validations: {required: true}
