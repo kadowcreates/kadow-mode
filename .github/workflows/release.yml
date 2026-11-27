@@ -2,18 +2,11 @@ name: release
 on:
   push:
     branches: [main]
-    paths: [.claude-plugin/plugin.json]
 permissions:
   contents: write
+  pull-requests: write
 jobs:
-  release:
+  release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      # One release per version: a push that leaves the version alone finds the tag and stops.
-      - run: |
-          v=v$(jq -r .version .claude-plugin/plugin.json)
-          gh release view "$v" >/dev/null 2>&1 && exit 0
-          gh release create "$v" --target "$GITHUB_SHA" --generate-notes
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
