@@ -2,7 +2,6 @@ name: release
 on:
   push:
     branches: [main]
-    paths: [.claude-plugin/plugin.json]
 permissions:
   contents: write
 jobs:
