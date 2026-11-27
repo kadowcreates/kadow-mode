@@ -68,9 +68,13 @@ In the pull request, say:
 
 ## Versioning
 
-Skills are versioned by the repo history. A release bumps `version` in
-`.claude-plugin/plugin.json`; plugin users get changes only when it moves. A skill that keeps its own `version` field
-(humanizer) bumps it in the same pull request and notes the change in its README.
+Work lands on `main` through short-lived pull requests, squash-merged, so the pull request
+title becomes the commit. Title it as a [Conventional Commit](https://www.conventionalcommits.org/):
+`fix(debloat): ...` for a fix, `feat(platform-audit): ...` for new behavior, `feat!:` for a
+breaking change. release-please keeps a release pull request open with the next version and
+CHANGELOG; merging it bumps `.claude-plugin/plugin.json`, tags, and publishes the release.
+Never edit the version by hand. A skill that keeps its own `version` field (humanizer) bumps
+it in the same pull request and notes the change in its README.
 
 ## License
 
