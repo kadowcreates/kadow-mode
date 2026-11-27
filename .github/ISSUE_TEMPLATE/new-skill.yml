@@ -1,0 +1,15 @@
+name: New skill
+description: Propose a skill before writing it, so we agree it belongs here.
+labels: [new-skill]
+body:
+  - type: textarea
+    id: job
+    attributes: {label: "What job does it do?"}
+    validations: {required: true}
+  - type: textarea
+    id: triggers
+    attributes: {label: "When should an agent load it?", description: The phrases or situations.}
+    validations: {required: true}
+  - type: textarea
+    id: evidence
+    attributes: {label: "How would you show it works?"}
