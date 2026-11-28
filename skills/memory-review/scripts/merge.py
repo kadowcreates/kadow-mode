@@ -7,7 +7,8 @@
 For each absorbed memory: move it to archive-YYMMDD/ (git mv when the folder is a git repo,
 so history follows), repoint every [[absorbed]] link to [[survivor]], and delete its line in
 MEMORY.md. Then drop duplicate and self links in each paragraph, and print any dead link.
-The survivor's own index line is the agent's to write. Nothing is deleted: the archive
+The survivor's own index line is the agent's to write. Without git, the survivor's
+text from before the merge is copied to the archive as SURVIVOR.pre-merge.md. Nothing is deleted: the archive
 holds every absorbed file in full. Standard library only.
 """
 import datetime, pathlib, re, shutil, subprocess, sys, tempfile
@@ -16,27 +17,23 @@ LINK = re.compile(r"\[\[([^\]]+)\]\]")
 INDEX = "MEMORY.md"
 
 
+RUN = re.compile(r"\[\[[^\]]+\]\](?:\s*,\s*\[\[[^\]]+\]\])*")
+
+
 def tidy(text, name):
-    """Drop repeated and self links per paragraph, then the commas they leave behind."""
-    out = []
-    for para in text.split("\n\n"):
-        seen = set()
+    """Drop repeated and self links inside each comma-separated run of links.
 
-        def keep(m):
-            k = m.group(1)
-            if k in seen or k == name:
-                return ""
-            seen.add(k)
-            return m.group(0)
-
-        new = LINK.sub(keep, para)
-        if new != para:
-            new = re.sub(r",(\s*,)+", ",", new)
-            new = re.sub(r":\s*,\s*", ": ", new)
-            new = re.sub(r",\s*(?=\.|$)", "", new)
-            new = re.sub(r"[ \t]+\n", "\n", new)
-        out.append(new)
-    return "\n\n".join(out)
+    A run that empties becomes "this memory" so the sentence around it still reads. A link
+    standing in prose is never deleted: removing it leaves holes like "against ." or "See .".
+    """
+    def fix(m):
+        seen, kept = set(), []
+        for k in LINK.findall(m.group(0)):
+            if k != name and k not in seen:
+                seen.add(k)
+                kept.append(f"[[{k}]]")
+        return ", ".join(kept) or "this memory"
+    return RUN.sub(fix, text)
 
 
 def merge(d, survivor, absorbed, today=None):
@@ -55,6 +52,9 @@ def merge(d, survivor, absorbed, today=None):
     arch = d / f"archive-{(today or datetime.date.today()).strftime('%y%m%d')}"
     arch.mkdir(exist_ok=True)
     git = (d / ".git").exists()
+    if not git:
+        # No history to undo the survivor rewrite: keep its text from before this merge.
+        shutil.copy2(d / f"{survivor}.md", arch / f"{survivor}.pre-merge.md")
     for a in absorbed:
         if git:
             subprocess.run(["git", "-C", str(d), "mv", f"{a}.md", f"{arch.name}/{a}.md"], check=True)
@@ -104,7 +104,10 @@ def self_test():
                 raise AssertionError(f"accepted {bad}")
             except SystemExit:
                 pass
-        assert tidy("x [[self]] y", "self") == "x  y"
+        assert (arch / "keep.pre-merge.md").read_text() == "kept\n"
+        assert tidy("x [[self]] y", "self") == "x this memory y"
+        assert tidy("against [[a]], see [[a]].", "z") == "against [[a]], see [[a]]."
+        assert tidy("See [[a]], [[b]], [[a]].", "b") == "See [[a]]."
     print("self-test passed")
     return 0
 

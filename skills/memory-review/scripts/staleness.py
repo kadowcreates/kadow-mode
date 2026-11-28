@@ -8,6 +8,7 @@ A memory states a checkable claim in a fact line, an HTML comment the agent neve
 
     <!-- fact: ~/repo/app.py contains "retry_limit" -->
     <!-- fact: buildbox:~/svc/unit.service lacks "Restart=no" -->
+    <!-- fact: ~/app/config.json json:server.ports.0 "8080" -->   (dotted key; a number indexes a list)
     <!-- fact: none (a preference; nothing to read) -->
 
 The script only reads files on the machine it runs on and opens no network connection.
@@ -18,9 +19,9 @@ backticked paths whose folder exists but the file does not, [[links]] to missing
 index lines pointing at missing files, memories missing from the index, and an index over
 budget. Standard library only.
 """
-import os, pathlib, re, sys, tempfile
+import json, os, pathlib, re, sys, tempfile
 
-FACT = re.compile(r'<!--\s*fact:\s*(\S+)\s+(contains|lacks)\s+"([^"]*)"\s*-->')
+FACT = re.compile(r'<!--\s*fact:\s*(\S+)\s+(contains|lacks|json:[\w.-]+)\s+"([^"]*)"\s*-->')
 NO_FACT = re.compile(r"<!--\s*fact:\s*none\b")
 LINK = re.compile(r"\[\[([^\]]+)\]\]")
 INDEX_REF = re.compile(r"\]\(([^)]+\.md)\)")
@@ -43,6 +44,19 @@ def check(path, verb, needle):
         text = p.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return "unreadable"
+    if verb.startswith("json:"):
+        try:
+            v = json.loads(text)
+        except ValueError:
+            return "unreadable"
+        for k in verb[5:].split("."):
+            if isinstance(v, list) and k.isdigit() and int(k) < len(v):
+                v = v[int(k)]
+            elif isinstance(v, dict) and k in v:
+                v = v[k]
+            else:
+                return "false"   # the key is gone: the memory's claim no longer holds
+        return "true" if (v if isinstance(v, str) else json.dumps(v)) == needle else "false"
     return "true" if (needle in text) == (verb == "contains") else "false"
 
 
@@ -139,6 +153,12 @@ def self_test():
         assert f["index over budget"] == ["5 lines > 4"]
         n, f = review(d, host="box", budget=9)
         assert f["fact for another machine"] == [] and f["false fact"] == [f'bad: {tgt} contains "gamma"']
+        (d / "c.json").write_text('{"a": {"b": ["x", 8080]}}')
+        cj = (d / "c.json").as_posix()
+        assert FACT.findall(f'<!-- fact: {cj} json:a.b.1 "8080" -->') == [(cj, "json:a.b.1", "8080")]
+        assert check(cj, "json:a.b.0", "x") == "true" and check(cj, "json:a.b.1", "8080") == "true"
+        assert check(cj, "json:a.b.1", "80") == "false" and check(cj, "json:a.z", "x") == "false"
+        assert check(tgt, "json:a", "x") == "unreadable"
         assert check(d.as_posix(), "contains", "x") == "unreadable"   # a folder is not a file
         assert split_host("C:/x/y") == (None, "C:/x/y") and split_host("box:~/a") == ("box", "~/a")
     print("self-test passed")

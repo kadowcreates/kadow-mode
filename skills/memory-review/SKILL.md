@@ -1,6 +1,6 @@
 ---
 name: memory-review
-description: "Review an agent's persistent memory folder from first principles: check every fact against the system it describes, give each memory a verdict (keep, merge, pointer, move, promote, drop), merge one topic at a time with the owner's go, and prove nothing live was lost. A staleness-only mode just checks the facts and links and reports. Use for 'review the memories', 'clean up memory', 'memory staleness' or 'check memories for staleness' (staleness-only), 'MEMORY.md is over budget', or after rules change and memories may now restate them."
+description: "Review an agent's persistent memory folder from first principles: check every fact against the system it describes, give each memory a verdict (move or pointer first, then merge), move procedures off to their docs, merge one topic at a time with the owner's go, and prove nothing live was lost. A staleness-only mode just checks the facts and links and reports. Use for 'review the memories', 'clean up memory', 'memory staleness' or 'check memories for staleness' (staleness-only), 'MEMORY.md is over budget', or after rules change and memories may now restate them."
 ---
 
 # Memory review
@@ -26,28 +26,33 @@ drop it) or the fact line is (correct the line). An **unreadable** fact is not a
 
 A fact line is an HTML comment the agent never reads, so it costs no context:
 `<!-- fact: ~/repo/app.py contains "retry_limit" -->`, `buildbox:~/path lacks "TEXT"` for a
-file on another machine, or `<!-- fact: none (why) -->` for a preference with nothing to read.
+file on another machine, `~/app/config.json json:server.port "8080"` for a JSON value, or `<!-- fact: none (why) -->` for a preference with nothing to read.
 A memory that names a file or a system needs one. The script is read-only and opens no network
 connection: facts for another machine are listed as not checked; run it there with
 `--host buildbox` to check them.
 
 ## 1. A verdict for every memory
 
-Read each memory whole, then check what it claims against what runs. Verdicts:
+Read each memory whole, then check what it claims against what runs. Decide in this order,
+and stop at the first verdict that fits: a memory leaves the folder before it is merged.
 
-| Verdict | When |
-|---|---|
-| **keep** | It changes what the agent does, and nothing else says it |
-| **merge** | Same topic as others: one memory per topic (one per person, project, machine, practice) |
-| **pointer** | A system, repo or doc can answer it: keep where to look, not a copy that drifts |
-| **move** | A procedure: it belongs in the doc beside the work (a README, a runbook), not in memory |
-| **promote** | It is a rule every agent needs: draft it into the rules file; the memory keeps the incidents |
-| **drop** | Stale, wrong, or about a direction that has ended |
+| Order | Verdict | When |
+|---|---|---|
+| 1 | **drop** | Stale, wrong, or about a direction that has ended |
+| 2 | **move** | A procedure or a convention for one folder or tool: it belongs in the doc beside the work (a README, a runbook); the memory keeps one link line, or goes |
+| 3 | **pointer** | A system, repo, roster or doc can answer it: keep where to look and when it was checked, not a copy that drifts |
+| 4 | **promote** | A rule every agent needs: draft it into the rules file; the memory keeps the incidents |
+| 5 | **merge** | What is left shares a topic with others: one memory per topic (one per person, project, machine, practice) |
+| 6 | **keep** | It changes what the agent does, and nothing else says it |
 
 Lenses that decide most cases:
-- **Facts readable from a system get a pointer.** A version number, a config value, a team
-  roster: the memory says where to read it and when it was last checked.
+- **Details about a person's or team's systems are a pointer** to where they live (their
+  repo, their docs), not a copy: the memory keeps who they are and how to work with them.
+- **A how-to is a move**, even when it is one paragraph: the next reader of that folder or tool
+  needs it, and an agent finds it there without memory.
 - **A rule already written elsewhere gets a pointer**, never a second copy.
+- **Practices of one kind are one topic**: five memories about how to verify work are one
+  memory with five parts, not five memories.
 - **Is it recurring?** A failure that recurs gets a gate (a hook, a test); otherwise a fix and
   a regression test, and the memory labels itself guidance.
 - **Keep the why.** A merged memory keeps each incident's date and ID, and the owner's own
@@ -55,20 +60,32 @@ Lenses that decide most cases:
 - **A thin memory is not junk on thinness alone**: it may be a deliberate test or a held
   decision. Check before dropping.
 
-Write the verdicts as a table (memory, verdict, why, evidence). Unlisted means keep.
+Write the verdicts as a table (memory, verdict, target, why, evidence). Unlisted means keep.
 
-## 2. Merge one topic at a time, with the owner's go
+## 2. Move off and link, then merge, one topic at a time, with the owner's go
 
-Show the owner the proposed survivor's **contents**, not file names, one topic per round.
-Merge only on the owner's go. Then:
+Show the owner the proposed result's **contents**, not file names, one topic per round. Act only
+on the owner's go.
 
-1. Write the survivor: frontmatter, a first line naming what it absorbed, the kept content,
-   fact lines, `[[links]]`.
+**Moves and pointers first.** Write the procedure into its target doc, then cut the memory to
+one line naming where it went (or archive it with `merge.py` into the memory that keeps the
+link). A target the reviewer cannot write (another machine, another repo, outside its reach):
+write the doc text ready to paste in the proposal and hold that verdict for the owner; never
+merge the procedure into a memory instead.
+
+**Then merges**, on what is left:
+
+1. Write the survivor fresh: frontmatter, a first line naming what it absorbed, then the kept
+   facts in its own words, one section per absorbed concern, fact lines and `[[links]]`. Never
+   paste absorbed bodies whole: a merge that cuts no words has only renamed the files. Aim for
+   the survivor to be shorter than the files it absorbed, without losing a fact.
 2. `python scripts/merge.py <memory-dir> <survivor> <absorbed>...` moves each absorbed file
-   to `archive-YYMMDD/` (history kept), repoints links, drops their index lines, removes
-   duplicate and self links, and prints dead links.
+   to `archive-YYMMDD/`, repoints links, drops their index lines, removes duplicate and self
+   links from link lists, and prints dead links. Without git it first copies the survivor's
+   old text to `archive-YYMMDD/<survivor>.pre-merge.md`.
 3. Add the survivor's index line. Fix any dead link it printed.
-4. Commit, one topic per commit, naming what merged.
+4. In a git folder, commit one topic per commit, naming what merged. Without git, the archive
+   and the `.pre-merge` copies are the undo; list each topic in the report instead.
 
 ## 3. Prove nothing live was lost
 

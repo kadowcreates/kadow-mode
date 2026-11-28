@@ -7,8 +7,11 @@ proves nothing live was lost.
 1. **Baseline:** `scripts/staleness.py` reads every fact line (`<!-- fact: PATH contains "X" -->`,
    on the machine it runs on; read-only, no network) and reports false facts, missing paths, dead links, index drift
    and budget.
-2. **Verdicts:** keep, merge, pointer, move, promote, drop, with the lenses that decide them.
-3. **Merge:** `scripts/merge.py` archives absorbed files, repoints links and tidies the index.
+2. **Verdicts,** in order: drop, move, pointer, promote, merge, keep. A memory leaves the folder
+   before it is merged.
+3. **Move off and link, then merge:** procedures go to the doc beside the work; survivors are
+   rewritten, not pasted. `scripts/merge.py` archives absorbed files, repoints links and tidies
+   the index.
 4. **Prove:** `scripts/coverage.py` lists IDs and quotes the merge dropped; a side-by-side read
    covers the rest.
 
