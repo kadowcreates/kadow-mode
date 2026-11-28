@@ -46,8 +46,11 @@ and stop at the first verdict that fits: a memory leaves the folder before it is
 | 6 | **keep** | It changes what the agent does, and nothing else says it |
 
 Lenses that decide most cases:
-- **Details about a person's or team's systems are a pointer** to where they live (their
-  repo, their docs), not a copy: the memory keeps who they are and how to work with them.
+- **A person is two memories at most: who they are, and the work done with or for them.** The
+  person memory holds role, what they decide, how to work with them. Their repos, hosts,
+  accounts, access and product details are a pointer to where those live (their GitHub org,
+  their docs), with the date checked, never a copy. Trigger: a memory names someone else's
+  repo, host, account or product, so split it and point.
 - **A how-to is a move**, even when it is one paragraph: the next reader of that folder or tool
   needs it, and an agent finds it there without memory.
 - **A rule already written elsewhere gets a pointer**, never a second copy.
@@ -60,12 +63,23 @@ Lenses that decide most cases:
 - **A thin memory is not junk on thinness alone**: it may be a deliberate test or a held
   decision. Check before dropping.
 
-Write the verdicts as a table (memory, verdict, target, why, evidence). Unlisted means keep.
+Write the verdicts as a table (memory, verdict, target, why, evidence, confidence). Unlisted
+means keep. **Confidence** is `sure` or `unsure`. Mark a verdict unsure when two lenses
+disagree, when it depends on whether something is still live and you could not check, or when
+memories might share a topic but you are not certain. Never resolve an unsure verdict by
+guessing: it goes to the step-by-step review in step 2.
 
 ## 2. Move off and link, then merge, one topic at a time, with the owner's go
 
 Show the owner the proposed result's **contents**, not file names, one topic per round. Act only
 on the owner's go.
+
+**Unsure verdicts are reviewed one at a time, before anything else.** For each, show the owner
+the memories involved (a short quote of each), the choices (for example: merge into X, keep
+apart, pointer to Y), what each choice would cost or lose, and your recommendation first. Wait
+for the answer, record it in the verdict table, then show the next. A possible merge you
+noticed but did not propose is an unsure verdict too. Without an owner to ask, list them in
+order in the proposal and act only on the sure verdicts.
 
 **Moves and pointers first.** Write the procedure into its target doc, then cut the memory to
 one line naming where it went (or archive it with `merge.py` into the memory that keeps the
