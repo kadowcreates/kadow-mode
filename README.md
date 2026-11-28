@@ -20,6 +20,7 @@ proof, or a named gap. It does not stop with "looks done."
 | [platform-audit](skills/platform-audit) | An audit of a system where AI agents send messages, spend money or ship code | A read-only, risk-based audit run to ISO 19011: risk register, tested controls, graded findings and a ranked fix list, with optional ISO/IEC 27001 and 42001 conformity. Validators check every output. |
 | [context-safe-compaction](skills/context-safe-compaction) | `CLAUDE.md` or a tool schema is over its inject limit, or a rule stopped being followed | A smaller prompt file with every rule kept, proven by probe and score scripts. |
 | [session-close](skills/session-close) | You are ending or merging agent sessions | A check that nothing lives only in the transcript: unpushed work, promises made in chat, records that disagree with what shipped. |
+| [memory-review](skills/memory-review) | "Review the memories", "memory staleness", the memory index is over budget | Every fact checked against the system it describes, a verdict per memory, merges one topic at a time with the owner's go, and a coverage check proving nothing live was lost. |
 
 ### Writing and summaries
 
@@ -65,7 +66,7 @@ To update, `git pull` and copy again.
 
 The skills are Markdown. A few ship helper scripts:
 
-- **debloat**, **context-safe-compaction**: Python 3.10 or later, standard library only.
+- **debloat**, **context-safe-compaction**, **memory-review**: Python 3.10 or later, standard library only.
 - **platform-audit**: Python 3.11 or later, git, and Claude Code or Grok to run the auditor.
 
 ## Layout
