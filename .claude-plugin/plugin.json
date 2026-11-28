@@ -1,6 +1,6 @@
 {
   "name": "kadow-mode",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Agent skills that measure, then claim: debloat, platform-audit, context-safe-compaction, session-close, memory-review, humanizer, meeting-intelligence, content-intelligence.",
   "author": {
     "name": "kadowcreates",
