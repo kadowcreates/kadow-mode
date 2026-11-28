@@ -15,3 +15,4 @@ jobs:
           python-version: "3.12"
       - run: python scripts/check-skills.py
       - run: for f in skills/platform-audit/*.py; do python $f --self-test; done
+      - run: for f in skills/memory-review/scripts/*.py; do python $f --self-test; done
