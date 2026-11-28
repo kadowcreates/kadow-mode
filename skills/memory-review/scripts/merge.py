@@ -2,13 +2,16 @@
 """Fold absorbed memories into a survivor the agent has already written.
 
     python merge.py MEMORY_DIR SURVIVOR ABSORBED [ABSORBED ...]
+    python merge.py MEMORY_DIR - DROPPED [DROPPED ...]      archive with no survivor (a drop)
     python merge.py --self-test
 
 For each absorbed memory: move it to archive-YYMMDD/ (git mv when the folder is a git repo,
 so history follows), repoint every [[absorbed]] link to [[survivor]], and delete its line in
 MEMORY.md. Then drop duplicate and self links in each paragraph, and print any dead link.
-The survivor's own index line is the agent's to write. Without git, the survivor's
-text from before the merge is copied to the archive as SURVIVOR.pre-merge.md. Nothing is deleted: the archive
+Run it BEFORE rewriting the survivor, then write the survivor from the archived files: an
+existing survivor's old text is then still the old text (without git it is also copied to the
+archive as SURVIVOR.pre-merge.md); a new survivor may not exist yet. The survivor's own index
+line is the agent's to write. Nothing is deleted: the archive
 holds every absorbed file in full. Standard library only.
 """
 import datetime, pathlib, re, shutil, subprocess, sys, tempfile
@@ -38,22 +41,21 @@ def tidy(text, name):
 
 def merge(d, survivor, absorbed, today=None):
     d = pathlib.Path(d)
-    for n in [survivor, *absorbed]:
+    drop = survivor == "-"
+    for n in ([] if drop else [survivor]) + list(absorbed):
         # A memory name is a bare file stem; a path would move files outside the folder.
         if not re.fullmatch(r"[\w.-]+", n) or n.startswith("."):
             raise SystemExit(f"not a memory name: {n!r}")
     if survivor in absorbed:
         raise SystemExit("the survivor cannot also be absorbed")
-    if not (d / f"{survivor}.md").exists():
-        raise SystemExit(f"write {survivor}.md first: the survivor carries what is kept")
     for a in absorbed:
         if not (d / f"{a}.md").exists():
             raise SystemExit(f"{a}.md not found; nothing moved")
     arch = d / f"archive-{(today or datetime.date.today()).strftime('%y%m%d')}"
     arch.mkdir(exist_ok=True)
     git = (d / ".git").exists()
-    if not git:
-        # No history to undo the survivor rewrite: keep its text from before this merge.
+    if not git and not drop and (d / f"{survivor}.md").exists():
+        # No history to undo the coming survivor rewrite: keep its text from before it.
         shutil.copy2(d / f"{survivor}.md", arch / f"{survivor}.pre-merge.md")
     for a in absorbed:
         if git:
@@ -61,17 +63,18 @@ def merge(d, survivor, absorbed, today=None):
         else:
             shutil.move(str(d / f"{a}.md"), str(arch / f"{a}.md"))
     dead = []
-    names = {p.stem for p in d.glob("*.md")}
+    names = {p.stem for p in d.glob("*.md")} | (set() if drop else {survivor})
     for p in d.glob("*.md"):
         text = p.read_text(encoding="utf-8")
         new = text
         if p.name == INDEX:
             new = "".join(l for l in text.splitlines(True)
                           if not any(f"({a}.md)" in l for a in absorbed))
-        else:
+        elif not drop:   # a drop leaves its links dead, so they are printed for the agent to fix
             for a in absorbed:
                 new = new.replace(f"[[{a}]]", f"[[{survivor}]]")
             new = tidy(new, p.stem)
+        if p.name != INDEX:
             dead += [f"{p.stem} -> {k}" for k in sorted(set(LINK.findall(new))) if k not in names]
         if new != text:
             p.write_bytes(new.encode("utf-8"))
@@ -93,11 +96,14 @@ def self_test():
         assert (d / "other.md").read_text() == "Related: [[keep]], [[nowhere]].\n", (d / "other.md").read_text()
         assert (d / INDEX).read_text() == "- [K](keep.md)\n"
         assert dead == ["other -> nowhere"], dead
-        try:
-            merge(d, "missing", ["keep"])
-            raise AssertionError("merged into an unwritten survivor")
-        except SystemExit:
-            pass
+        (d / "gone.md").write_text("g\n"); (d / "ref.md").write_text("see [[gone]]\n")
+        (d / INDEX).write_text("- [G](gone.md)\n- [R](ref.md)\n")
+        _, dead = merge(d, "-", ["gone"], datetime.date(2026, 11, 27))
+        assert (arch / "gone.md").exists() and (d / INDEX).read_text() == "- [R](ref.md)\n"
+        assert "ref -> gone" in dead, dead
+        (d / "x.md").write_text("see [[y]]\n"); (d / "y.md").write_text("y\n")
+        _, dead = merge(d, "fresh", ["y"], datetime.date(2026, 11, 27))   # new survivor, not yet written
+        assert (d / "x.md").read_text() == "see [[fresh]]\n" and not any("fresh" in x for x in dead)
         for bad in (["../x"], ["keep"], [".hidden"]):
             try:
                 merge(d, "keep", bad)
@@ -119,4 +125,6 @@ if __name__ == "__main__":
         sys.exit(__doc__.strip())
     arch, dead = merge(sys.argv[1], sys.argv[2], sys.argv[3:])
     print(f"archived {len(sys.argv) - 3} file(s) to {arch.name}/")
+    if sys.argv[2] != "-":
+        print(f"now write {sys.argv[2]}.md from the archived files, then its index line")
     print("\n".join(f"dead link: {x}" for x in dead) or "no dead links")

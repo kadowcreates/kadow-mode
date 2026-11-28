@@ -89,14 +89,16 @@ merge the procedure into a memory instead.
 
 **Then merges**, on what is left:
 
-1. Write the survivor fresh: frontmatter, a first line naming what it absorbed, then the kept
-   facts in its own words, one section per absorbed concern, fact lines and `[[links]]`. Never
-   paste absorbed bodies whole: a merge that cuts no words has only renamed the files. Aim for
-   the survivor to be shorter than the files it absorbed, without losing a fact.
-2. `python scripts/merge.py <memory-dir> <survivor> <absorbed>...` moves each absorbed file
-   to `archive-YYMMDD/`, repoints links, drops their index lines, removes duplicate and self
-   links from link lists, and prints dead links. Without git it first copies the survivor's
-   old text to `archive-YYMMDD/<survivor>.pre-merge.md`.
+1. `python scripts/merge.py <memory-dir> <survivor> <absorbed>...` first. It moves each
+   absorbed file to `archive-YYMMDD/`, repoints links to the survivor, drops their index
+   lines, removes duplicate and self links from link lists, and prints dead links. Without
+   git it copies an existing survivor's old text to `archive-YYMMDD/<survivor>.pre-merge.md`.
+   A drop with no survivor: `merge.py <memory-dir> - <name>`; fix the dead links it prints.
+2. Then write the survivor fresh, from the archived files: frontmatter, a first line naming
+   what it absorbed, then the kept facts in its own words, one section per absorbed concern,
+   fact lines and `[[links]]`. Never paste absorbed bodies whole: a merge that cuts no words
+   has only renamed the files. Aim for the survivor to be shorter than the files it absorbed,
+   without losing a fact.
 3. Add the survivor's index line. Fix any dead link it printed.
 4. In a git folder, commit one topic per commit, naming what merged. Without git, the archive
    and the `.pre-merge` copies are the undo; list each topic in the report instead.

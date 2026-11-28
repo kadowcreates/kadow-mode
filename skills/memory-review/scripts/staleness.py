@@ -121,7 +121,10 @@ def main(argv):
         return 2
     n, f = review(args[0], opts["--host"], int(opts["--budget"]))
     found = sum(len(v) for k, v in f.items() if k != "fact for another machine")
-    print(f"{n} fact lines; {len(f['false fact'])} false, {len(f['unreadable fact'])} unreadable, "
+    d = pathlib.Path(args[0])
+    mem = len([p for p in d.glob("*.md") if p.name != INDEX])
+    idx = len((d / INDEX).read_text(encoding="utf-8").splitlines()) if (d / INDEX).exists() else 0
+    print(f"{mem} memories, {idx} index lines; {n} fact lines; {len(f['false fact'])} false, {len(f['unreadable fact'])} unreadable, "
           f"{len(f['fact for another machine'])} for another machine; {found} findings.")
     for k, v in f.items():
         if v:
