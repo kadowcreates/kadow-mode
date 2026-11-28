@@ -9,10 +9,12 @@ proves nothing live was lost.
    and budget.
 2. **Verdicts,** in order: drop, move, pointer, promote, merge, keep. A memory leaves the folder
    before it is merged.
-3. **Move off and link, then merge:** procedures go to the doc beside the work; survivors are
-   rewritten, not pasted. `scripts/merge.py` archives absorbed files, repoints links and tidies
-   the index.
-4. **Prove:** `scripts/coverage.py` lists IDs and quotes the merge dropped; a side-by-side read
+3. **Plan and ask:** one plan of every change (moves, pointers, merges with survivor
+   contents); unsure verdicts are asked one at a time; nothing changes until the owner's go on
+   the final plan.
+4. **Execute:** move off and link, then merge. `scripts/merge.py` archives absorbed files,
+   repoints links and tidies the index; survivors are rewritten, not pasted.
+5. **Prove:** `scripts/coverage.py` lists IDs and quotes the merge dropped; a side-by-side read
    covers the rest.
 
 Python 3.10 or later, standard library only. Each script has `--self-test`.

@@ -1,6 +1,6 @@
 ---
 name: memory-review
-description: "Review an agent's persistent memory folder from first principles: check every fact against the system it describes, give each memory a verdict (move or pointer first, then merge), move procedures off to their docs, merge one topic at a time with the owner's go, and prove nothing live was lost. A staleness-only mode just checks the facts and links and reports. Use for 'review the memories', 'clean up memory', 'memory staleness' or 'check memories for staleness' (staleness-only), 'MEMORY.md is over budget', or after rules change and memories may now restate them."
+description: "Review an agent's persistent memory folder from first principles: check every fact against the system it describes, give each memory a verdict (move or pointer first, then merge), move procedures off to their docs, plan every change and ask about the unsure ones, execute only on the owner's go on the final plan, and prove nothing live was lost. A staleness-only mode just checks the facts and links and reports. Use for 'review the memories', 'clean up memory', 'memory staleness' or 'check memories for staleness' (staleness-only), 'MEMORY.md is over budget', or after rules change and memories may now restate them."
 ---
 
 # Memory review
@@ -14,14 +14,15 @@ The folder this assumes: one memory per `.md` file with frontmatter (`name`, `de
 
 **Two modes.** **Staleness only** (the request is a staleness check, a routine check, or
 `staleness`): run step 0, fix false facts and dead links, re-run, report the numbers, and stop.
-No verdicts, no merges. **Full review** (everything else): steps 0 to 4.
+No verdicts, no merges. **Full review** (everything else): steps 0 to 5. Steps 0 to 2 change
+nothing; the folder is edited only in step 3, after the owner's go on the final plan.
 
 ## 0. Baseline (measure before touching anything)
 
     python scripts/staleness.py <memory-dir> [--budget 200] [--host NAME]
 
 Record: memory count, index lines, fact lines read, false, unreadable, and each finding list.
-A **false fact** is fixed first, before any merge: either the memory is wrong (correct it or
+A **false fact** is fixed first (in a full review, as the plan's first items): either the memory is wrong (correct it or
 drop it) or the fact line is (correct the line). An **unreadable** fact is not a pass.
 
 A fact line is an HTML comment the agent never reads, so it costs no context:
@@ -67,24 +68,38 @@ Write the verdicts as a table (memory, verdict, target, why, evidence, confidenc
 means keep. **Confidence** is `sure` or `unsure`. Mark a verdict unsure when two lenses
 disagree, when it depends on whether something is still live and you could not check, or when
 memories might share a topic but you are not certain. Never resolve an unsure verdict by
-guessing: it goes to the step-by-step review in step 2.
+guessing: it becomes a question in step 2.
 
-## 2. Move off and link, then merge, one topic at a time, with the owner's go
+## 2. Plan, ask, and get the go (nothing changes yet)
 
-Show the owner the proposed result's **contents**, not file names, one topic per round. Act only
-on the owner's go.
+Write the plan in one file, in the order it will run:
+1. false-fact fixes from step 0;
+2. drops;
+3. moves and pointers: each memory, its target, and the doc text to write there;
+4. promotions: the rule draft and where it goes;
+5. merges: each survivor's name, what it absorbs, and an outline of its **contents** (sections
+   and the facts each keeps), not just file names;
+6. the expected after numbers: memory count, index lines.
 
-**Unsure verdicts are reviewed one at a time, before anything else.** For each, show the owner
-the memories involved (a short quote of each), the choices (for example: merge into X, keep
-apart, pointer to Y), what each choice would cost or lose, and your recommendation first. Wait
-for the answer, record it in the verdict table, then show the next. A possible merge you
-noticed but did not propose is an unsure verdict too. Without an owner to ask, list them in
-order in the proposal and act only on the sure verdicts.
+**Then ask the unsure verdicts, one question at a time.** Each question shows the memories
+involved (a short quote of each), the choices (merge into X, keep apart, pointer to Y), what
+each choice would cost or lose, and your recommendation first. A possible merge you noticed
+but did not plan is a question too. Record each answer and update the plan before asking the
+next.
+
+**Then show the final plan and ask for the go on it as a whole.** Changes the owner asks for
+update the plan and it is shown again. Execute only after an explicit go on the final plan;
+anything not in it waits for another plan. Without an owner to ask, stop here: the plan and the
+questions are the deliverable.
+
+## 3. Execute the approved plan
+
+Run it in the plan's order. Do not add to it: a new finding goes into the report as a proposal.
 
 **Moves and pointers first.** Write the procedure into its target doc, then cut the memory to
 one line naming where it went (or archive it with `merge.py` into the memory that keeps the
 link). A target the reviewer cannot write (another machine, another repo, outside its reach):
-write the doc text ready to paste in the proposal and hold that verdict for the owner; never
+the plan carries the doc text ready to paste; the memory stays until the owner pastes it. Never
 merge the procedure into a memory instead.
 
 **Then merges**, on what is left:
@@ -103,7 +118,7 @@ merge the procedure into a memory instead.
 4. In a git folder, commit one topic per commit, naming what merged. Without git, the archive
    and the `.pre-merge` copies are the undo; list each topic in the report instead.
 
-## 3. Prove nothing live was lost
+## 4. Prove nothing live was lost
 
     python scripts/coverage.py <memory-dir> <memory-dir>/archive-YYMMDD
 
@@ -115,7 +130,7 @@ its survivor and list every live statement the survivor dropped. Restore the los
 
 Then run `staleness.py` again: false facts must be 0, and the index under budget.
 
-## 4. Report
+## 5. Report
 
 Before and after: memory count, index lines, fact lines (true / false / unreadable), findings
 per list, anchors absent and how each was classified. Name what is held for the owner (a
