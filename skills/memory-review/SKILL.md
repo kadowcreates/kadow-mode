@@ -1,6 +1,6 @@
 ---
 name: memory-review
-description: "Review an agent's persistent memory folder from first principles: check every fact against the system it describes, give each memory a verdict (keep, merge, pointer, move, promote, drop), merge one topic at a time with the owner's go, and prove nothing live was lost. Use for 'review the memories', 'clean up memory', 'memory staleness', 'MEMORY.md is over budget', or after rules change and memories may now restate them."
+description: "Review an agent's persistent memory folder from first principles: check every fact against the system it describes, give each memory a verdict (keep, merge, pointer, move, promote, drop), merge one topic at a time with the owner's go, and prove nothing live was lost. A staleness-only mode just checks the facts and links and reports. Use for 'review the memories', 'clean up memory', 'memory staleness' or 'check memories for staleness' (staleness-only), 'MEMORY.md is over budget', or after rules change and memories may now restate them."
 ---
 
 # Memory review
@@ -11,6 +11,10 @@ and every claim it makes rests on a script's output or a file the owner can open
 
 The folder this assumes: one memory per `.md` file with frontmatter (`name`, `description`,
 `type`), `[[name]]` links between memories, and an index `MEMORY.md`, one line per memory.
+
+**Two modes.** **Staleness only** (the request is a staleness check, a routine check, or
+`staleness`): run step 0, fix false facts and dead links, re-run, report the numbers, and stop.
+No verdicts, no merges. **Full review** (everything else): steps 0 to 4.
 
 ## 0. Baseline (measure before touching anything)
 
