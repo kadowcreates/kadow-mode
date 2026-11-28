@@ -14,16 +14,18 @@ The folder this assumes: one memory per `.md` file with frontmatter (`name`, `de
 
 ## 0. Baseline (measure before touching anything)
 
-    python scripts/staleness.py <memory-dir> [--budget 200]
+    python scripts/staleness.py <memory-dir> [--budget 200] [--host NAME]
 
 Record: memory count, index lines, fact lines read, false, unreadable, and each finding list.
 A **false fact** is fixed first, before any merge: either the memory is wrong (correct it or
 drop it) or the fact line is (correct the line). An **unreadable** fact is not a pass.
 
 A fact line is an HTML comment the agent never reads, so it costs no context:
-`<!-- fact: ~/repo/app.py contains "retry_limit" -->`, `host:~/path lacks "TEXT"` over ssh,
-or `<!-- fact: none (why) -->` for a preference with nothing to read. A memory that names
-a file or a system needs one.
+`<!-- fact: ~/repo/app.py contains "retry_limit" -->`, `buildbox:~/path lacks "TEXT"` for a
+file on another machine, or `<!-- fact: none (why) -->` for a preference with nothing to read.
+A memory that names a file or a system needs one. The script is read-only and opens no network
+connection: facts for another machine are listed as not checked; run it there with
+`--host buildbox` to check them.
 
 ## 1. A verdict for every memory
 

@@ -41,6 +41,12 @@ def tidy(text, name):
 
 def merge(d, survivor, absorbed, today=None):
     d = pathlib.Path(d)
+    for n in [survivor, *absorbed]:
+        # A memory name is a bare file stem; a path would move files outside the folder.
+        if not re.fullmatch(r"[\w.-]+", n) or n.startswith("."):
+            raise SystemExit(f"not a memory name: {n!r}")
+    if survivor in absorbed:
+        raise SystemExit("the survivor cannot also be absorbed")
     if not (d / f"{survivor}.md").exists():
         raise SystemExit(f"write {survivor}.md first: the survivor carries what is kept")
     for a in absorbed:
@@ -92,6 +98,12 @@ def self_test():
             raise AssertionError("merged into an unwritten survivor")
         except SystemExit:
             pass
+        for bad in (["../x"], ["keep"], [".hidden"]):
+            try:
+                merge(d, "keep", bad)
+                raise AssertionError(f"accepted {bad}")
+            except SystemExit:
+                pass
         assert tidy("x [[self]] y", "self") == "x  y"
     print("self-test passed")
     return 0

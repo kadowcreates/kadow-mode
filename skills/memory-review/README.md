@@ -5,7 +5,7 @@ describes, gives each memory a verdict, merges one topic at a time with the owne
 proves nothing live was lost.
 
 1. **Baseline:** `scripts/staleness.py` reads every fact line (`<!-- fact: PATH contains "X" -->`,
-   local or `host:path` over ssh) and reports false facts, missing paths, dead links, index drift
+   on the machine it runs on; read-only, no network) and reports false facts, missing paths, dead links, index drift
    and budget.
 2. **Verdicts:** keep, merge, pointer, move, promote, drop, with the lenses that decide them.
 3. **Merge:** `scripts/merge.py` archives absorbed files, repoints links and tidies the index.
