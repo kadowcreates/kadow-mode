@@ -35,6 +35,8 @@ def tidy(text, name):
             if k != name and k not in seen:
                 seen.add(k)
                 kept.append(f"[[{k}]]")
+        if len(kept) == len(LINK.findall(m.group(0))):
+            return m.group(0)   # nothing dropped: keep the run's own line breaks
         return ", ".join(kept) or "this memory"
     return RUN.sub(fix, text)
 
@@ -114,6 +116,7 @@ def self_test():
         assert tidy("x [[self]] y", "self") == "x this memory y"
         assert tidy("against [[a]], see [[a]].", "z") == "against [[a]], see [[a]]."
         assert tidy("See [[a]], [[b]], [[a]].", "b") == "See [[a]]."
+        assert tidy("See [[a]],\n[[b]].", "z") == "See [[a]],\n[[b]]."
     print("self-test passed")
     return 0
 
